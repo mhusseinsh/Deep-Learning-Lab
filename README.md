@@ -1,2 +1,2 @@
 # Deep-Learning-Lab
-Deep Learning Lab Course - University of Freiburg
+Laboratory in the field of Autonomous Intelligent Systems (Deep Learning for Robotics) - University of Freiburg
