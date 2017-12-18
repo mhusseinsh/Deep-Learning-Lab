@@ -14,4 +14,4 @@ There are five main files that should be of interest for you:
 
   The utils.py file contains some additional options that you might find useful NOTE: especially the disp_on variable might be interesting as it switches between running the scripts with and without the visualization on
 
-Additionally you can change the map layour (or add new maps) by drawing a map in the format defined in maps.py.
+Additionally you can change the map layout (or add new maps) by drawing a map in the format defined in maps.py.
