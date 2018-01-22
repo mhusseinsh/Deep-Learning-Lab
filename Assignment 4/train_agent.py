@@ -357,7 +357,7 @@ if(Training):
             if (step % 1000) == 0:
                 test_agent()
 
-            # Decay epsilon among 50,000 steps until 0.1
+            # Decay epsilon among 130,000 steps until 0.1
             if (epsilon > epsilon_final):
                 epsilon = epsilon*decay_factor
             else:
