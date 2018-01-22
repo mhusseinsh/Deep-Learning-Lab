@@ -207,7 +207,7 @@ reward_sum = 0
 # variables for plotting
 average_episodes_lengths = []
 average_episodes_rewards = []
-average_episodes_reached = []
+average_episodes_successed = []
 average_episodes_failed = []
 
 state = sim.newGame(opt.tgt_y, opt.tgt_x)
@@ -216,13 +216,13 @@ append_to_hist(state_with_history, rgb2gray(state.pob).reshape(opt.state_siz))
 next_state_with_history = np.copy(state_with_history)
 
 def test_agent():
-    reached = 0
+    episodes_test = 50
+    successed = 0
     failed = 0
     episode_length = []
     episode_reward = []
     print("testing model")
     state = sim.newGame(opt.tgt_y, opt.tgt_x)
-    episodes_test = 50
     test_state_with_history = np.zeros((opt.hist_len, opt.state_siz))
     append_to_hist(test_state_with_history, rgb2gray(state.pob).reshape(opt.state_siz))
     test_next_state_with_history = np.copy(test_state_with_history)
@@ -232,7 +232,7 @@ def test_agent():
         while(1):
             if state.terminal or test_step >= opt.early_stop:
                 if(state.terminal):
-                    reached += 1
+                    successed += 1
                 else:
                     failed += 1
                 # reset the game
@@ -253,7 +253,7 @@ def test_agent():
             # append state to history
             append_to_hist(test_next_state_with_history, rgb2gray(next_state.pob).reshape(opt.state_siz))
 
-            # mark next state as current state
+            # next state as current state
             test_state_with_history = np.copy(test_next_state_with_history)
             state = next_state
             test_reward += state.reward
@@ -275,7 +275,7 @@ def test_agent():
                 plt.draw()
     average_episodes_lengths.append(np.mean(episode_length))
     average_episodes_rewards.append(np.mean(episode_reward))
-    average_episodes_reached.append(reached/episodes_test)
+    average_episodes_successed.append(successed/episodes_test)
     average_episodes_failed.append(failed/episodes_test)
 
 # Training / Testing
@@ -396,7 +396,7 @@ if(Training):
     # save results logs
     np.savetxt('Test_Episodes_Lengths.txt', average_episodes_lengths, fmt="%.5f")
     np.savetxt('Test_Episodes_Rewards.txt', average_episodes_rewards, fmt="%.5f")
-    np.savetxt('Test_Episodes_Reached.txt', average_episodes_reached, fmt="%.5f")
+    np.savetxt('Test_Episodes_successed.txt', average_episodes_successed, fmt="%.5f")
     np.savetxt('Test_Episodes_Failed.txt', average_episodes_failed, fmt="%.5f")
     np.savetxt('Loss.txt', ll, fmt="%.5f")
     np.savetxt('Reward Sum (Training).txt', re, fmt="%.5f")
@@ -449,12 +449,12 @@ if(Training):
 
     # summarize history for terminal episodes
     fig6 = plt.figure()
-    plt.plot(average_episodes_reached)
-    plt.title('Average Episodes Reached')
+    plt.plot(average_episodes_successed)
+    plt.title('Average Episodes successed')
     plt.ylabel('No of Episodes')
     plt.xlabel('Test Steps')
     #plt.show()
-    fig6.savefig('episodes_reached.png')
+    fig6.savefig('episodes_successed.png')
 
     # summarize history for terminal episodes
     fig7 = plt.figure()
@@ -477,7 +477,7 @@ if(Training):
 # 2. perform a final test of your model and save it
 # TODO
 else:
-    reached = 0
+    successed = 0
     failed = 0
     json_file = open('model.json','r')
     modell = json_file.read()
@@ -495,7 +495,7 @@ else:
             epi_step = 0
             nepisodes += 1
             if(state.terminal):
-                reached += 1
+                successed += 1
             else:
                 failed += 1
             # reset the game
