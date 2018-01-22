@@ -186,7 +186,7 @@ epi_step = 0
 nepisodes = 0
 
 # variables
-explore = 50000  # Generate random action and do not train for at least 50,000 
+explore = 50000  # explore randomly
 decay_factor = 0.999982 # decay factor
 epsilon_start = 1
 epsilon_final = 0.1
@@ -194,11 +194,11 @@ epsilon = epsilon_start
 epsilon_stop_logging = 0
 loss = 0
 discount = 0.99
-flagt = False # flag for checking if terminal state, used in printing
-s = "" #Used for printing Action source, random or network
+flagt = False # terminal state
+s = "" #action source
 steps_test = 5000
-st = [] #steps - used for graph generation
-ll = [] #loss - used for graph generation
+st = [] #steps
+ll = [] #loss
 re = [] #Rewards
 q_values = []#Q-Values
 epsilon_decay = []
@@ -231,7 +231,6 @@ def test_agent():
         test_reward = 0
         while(1):
             if state.terminal or test_step >= opt.early_stop:
-                #nepisodes += 1
                 if(state.terminal):
                     reached += 1
                 else:
@@ -343,10 +342,8 @@ if(Training):
             #Q_loss(Q_s, action_onehot, Q_s_next, best_action_next, reward, terminal, discount=0.99)
             loss = Q_loss(updated_Q, action_onehot, action_batch_next, action_batch_next_max_reshape, state.reward, state.terminal, discount=0.99)
             reward_sum += state.reward
-            # tprint every 100 steps
+            # every 100 steps
             if(step % 100) == 0:
-                print("Step    : ", step, " Loss: " ,loss, "Action: ", s, "Terminal: ", flagt )
-                print("State action : ", action, " Reward sum : ", reward_sum)
                 flagt= False
                 st.append(step)
                 ll.append(loss)
@@ -369,9 +366,6 @@ if(Training):
 
             if epsilon_stop_logging <= 10000:
                 epsilon_decay.append(epsilon)
-        # epsilon update rate
-        #if(epsilon > epsilon_final and step > explore):
-            #epsilon -= ((epsilon_start - epsilon_final) / decay_factor)
 
         # TODO every once in a while you should test your agent here so that you can track its performance
         opt.disp_on = False
@@ -395,8 +389,11 @@ if(Training):
             # serialize weights to HDF5
             model_q.save_weights("model.h5")
             print("Saved model to disk")
-            
+    
+    # run session on loss tensors       
     ll = tf.Session().run(ll)
+
+    # save results logs
     np.savetxt('Test_Episodes_Lengths.txt', average_episodes_lengths, fmt="%.5f")
     np.savetxt('Test_Episodes_Rewards.txt', average_episodes_rewards, fmt="%.5f")
     np.savetxt('Test_Episodes_Reached.txt', average_episodes_reached, fmt="%.5f")
